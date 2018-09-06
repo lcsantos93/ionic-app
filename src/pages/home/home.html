@@ -1,0 +1,251 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Home</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+  <form name="form" role="form" action="javascript:geraDados()">
+
+    <div class="container-fluid" style="margin:0 auto;background-color:#FFF;">
+      <div class="col-sm-6" id="parametros">
+        <div class="col-sm-12" style="margin-bottom:20px;" id="titulo_parametros">
+          <h2 class="titleContratos"><strong>titleContratos</strong></h2>
+          <h2 class="titleContratosCif"><strong>titleContratosCif</strong></h2>
+        </div>
+        <div class="col-sm-12" style="margin-bottom:20px;display:none;">
+          <label>emailBusca</label>
+          <input type="text" id="email" name="email" class="form-control" onchange="autenticaUsuario()" value="rafael.marques@slc.com.br">
+          <input type="hidden" id="tipoUsuario" name="tipoUsuario" class="form-control">
+          <input type="hidden" id="usuario_id" name="usuario_id" class="form-control">
+          <input type="hidden" id="cod_cliente" name="cod_cliente" class="form-control">
+          <input type="hidden" id="cod_corretora" name="cod_corretora" class="form-control">
+        </div>
+
+        <div class="row" style="margin-top:20px;margin-bottom:30px;">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <div class="col-sm-7 col-md-7">
+                <div class="input-group">
+                  <div id="radioBtn" class="btn-group">
+                    <a class="btn btn-info btn-md notActive" data-toggle="tipoSaida" data-title="GRAFICO" onclick="alteraModo()">Gráfico</a>
+                    <a class="btn btn-info btn-md notActive" data-toggle="tipoSaida" data-title="RELATORIO" onclick="alteraModo()">Relatório</a>
+                  </div>
+                  <input type="hidden" name="tipoSaida" id="tipoSaida" class="valQuestoes" onchange="alteraModo()">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12" style="margin-bottom:20px;">
+          <label><strong>SAFRA</strong></label>
+          <select class="form-control" name="safra" id="safra" onchange="alteraParametros('SAFRA',this.value),alteraModo()">
+          </select>
+        </div>
+        <div class="col-sm-12" style="margin-bottom:20px;">
+          <label><strong>CLIENTE</strong></label>
+          <select class="form-control js-example-basic-single" name="cliente2" id="cliente2" onchange="alteraCliente(),alteraParametros('CLIENTE',this.value),alteraModo(),alteraCliente()">
+          </select>
+          <input type="hidden" name="contrato" id="contrato">
+        </div>
+        <div class="col-sm-12" style="margin-bottom:20px;">
+          <label><strong>CONTRATO</strong></label>
+          <select class="form-control js-example-basic-single" name="contrato2" id="contrato2" onchange="alteraParametros('CONTRATO',this.value),alteraContrato(),alteraModo()">
+          </select>
+          <input type="hidden" name="contrato" id="contrato">
+        </div>
+        <div class="col-sm-12" style="margin-bottom:20px;">
+          <label><strong>instrucaoEmbarque</strong></label>
+          <select class="form-control js-example-basic-single" name="embarque2" id="embarque2" onchange="alteraParametros('INSTR_EMBARQUE',this.value),alteraEmbarque(),alteraModo()">
+          </select>
+          <input type="hidden" name="embarque" id="embarque">
+        </div>
+
+        <div class="row" style="margin-top:30px;margin-bottom:30px;" id="btnModo">
+          <div class='col-sm-12'>
+            <div class='form-group'>
+              <div class='col-sm-12 col-md-12'>
+                <div class='input-group'>
+                  <div id='radioBtn' class='btn-group'>
+                    <a class='btn btn-info btn-md notActive' data-toggle='modoSaida' data-title='FAZENDA'>FAZENDA</a>
+                    <a class='btn btn-info btn-md notActive' id="btnGeral" data-toggle='modoSaida' data-title='GERAL'>geral</a>
+                    <a class='btn btn-info btn-md notActive' id="btnInstrucao" data-toggle='modoSaida' data-title='INSTR_EMBARQUE'>instrucaoEmbarque</a>
+                  </div>
+                  <input type='hidden' name='modoSaida' id='modoSaida' class='valQuestoes'>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="alert alert-danger" role="alert" id="alertaContrato" style="display:none;">
+          <span><strong>alertaValidacao</strong></span>
+        </div>
+        <div class="col-sm-3">
+          <button type="submit" id="btnDados" name="btnDados" class="btn btn-md btn-success">pesquisar</button>
+        </div>
+        <div class="col-sm-3">
+          <button type="button" id="btnLimpa" class="btn btn-md btn-primary" onclick="limpaParametros()">limpar</button>
+        </div>
+      </div>
+      <div class="row" id="controles" style="position:fixed;top:48%;width:100%;display:none;z-index:900;">
+        <div class="col-sm-6" style="float:left;">
+          <!--<input type="button" class="btn btn-primary" value="Esquerda" >-->
+          <span class="fluigicon fluigicon-chevron-left fluigicon-lg" onclick="moveTela('ESQUERDA')" style="color:#CCC;opacity:0.5;"></span>
+        </div>
+        <div class="col-sm-6" style="float:right;">
+          <!--<input type="button" class="btn btn-primary" value="Direita" onclick="moveTela('DIREITA')">-->
+          <span class="fluigicon fluigicon-chevron-right fluigicon-lg" onclick="moveTela('DIREITA')" style="color:#CCC;opacity:0.5;"></span>
+        </div>
+      </div>
+      <div class="row" id="controlBack" style="display:none;z-index:900;margin-top:-15px;">
+        <div class="col-sm-11">
+          <table class="exibeParam" style="width:90%;float:left;">
+            <tr>
+              <td><span class="labelParam">safra: </span><span class="conteudoParam" id="labelSafra"></span></td>
+              <td><span class="labelParam">cliente: </span><span class="conteudoParam" id="labelCliente"></span></td>
+              <td><span class="labelParam">contrato: </span><span class="conteudoParam" id="labelContrato"></span></td>
+              <td><span class="labelParam">Instr. embarque: </span><span class="conteudoParam" id="labelEmbarque"></span></td>
+            </tr>
+          </table>
+        </div>
+        <div class="col-sm-1" style="margin-top:5px;">
+          <button type="button" class="btn btn-primary btn-sm" style="float:left;" onclick="voltarParametros()">voltar</button>
+        </div>
+      </div>
+      <div class="row" id="resultado" style="display:none;max-height:300px;overflow-y: auto;overflow-x: auto;">
+        <div class="col-sm-12" id="divRelInstrEmbarque" style="display:none;">
+          <table class="table-bordered" id="tbPrincipal" style="width: 100% !important;">
+            <thead>
+              <tr style='display: table-row !important;'>
+                <th style='width:7%;'>numeroContrato</th>
+                <th style='width:11%;'>Instr. embarque</th>
+                <th style='width:10%;'>Nº processo</th>
+                <th style='width:7%;'>armador</th>
+                <th style='width:10%;'>navio</th>
+                <th style='width:10%;'>ETA</th>
+                <th style='width:10%;'>status</th>
+                <th style='width:7%;'>Qtd. fardos</th>
+                <th style='width:11%;'>pesoLiqCertificado</th>
+                <th style='width:4%;'>analitico</th>
+              </tr>
+            </thead>
+            <tbody id="contentTable">
+            </tbody>
+          </table>
+        </div>
+        <div class="col-sm-12" id="divRelFazenda" style="display:none;">
+          <table class="table-bordered" id="tbPrincipal" style="width: 100% !important;">
+            <thead>
+              <tr style='display: table-row !important;'>
+                <th style='width:7%;'>fazenda</th>
+                <th style='width:10%;'>fardos</th>
+                <th style='width:7%;'>peso(Kg)</th>
+                <th style='width:10%;'>Kg/Fardo</th>
+                <th style='width:10%;'>Mic</th>
+                <th style='width:10%;'>Res</th>
+                <th style='width:7%;'>UHM</th>
+                <th style='width:4%;'>analitico</th>
+              </tr>
+            </thead>
+            <tbody id="contentTableFaz">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="row" id="resAnalitico" style="display:none;height:300px;overflow-y: auto;overflow-x: auto;margin-top:0px;">
+        <div class="col-sm-11">
+          <table class="exibeParam2" style="width:90%;float:left;">
+            <tr>
+              <td><span class="labelParam">cliente: </span><span class="conteudoParam" id="labelClienteAn"></span></td>
+              <td><span class="labelParam">contrato: </span><span class="conteudoParam" id="labelContratoAn"></span></td>
+            </tr>
+          </table>
+        </div>
+        <div class="col-sm-1" style="padding:3px;">
+          <button type="button" class="btn btn-primary btn-sm" style="" onclick="ocultaAnalitico()">voltar</button>
+        </div>
+        <div class="col-sm-12">
+          <table class="table-bordered" id="tbAnalitico" style="width: 100% !important;">
+            <thead>
+              <tr style='display: table-row !important;'>
+                <th style='width:7%;'>fazenda</th>
+                <th style='width:11%;'>bloco</th>
+                <th style='width:10%;'>fardos</th>
+                <th style='width:7%;'>pesoLiquido</th>
+                <th style='width:10%;'>tipo</th>
+                <th style='width:10%;'>Uhm</th>
+                <th style='width:10%;'>Res</th>
+                <th style='width:7%;'>Mic</th>
+              </tr>
+            </thead>
+            <tbody id="contentAnalitico">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="row" id="resAnaliticoFaz" style="display:none;height:300px;overflow-y: auto;overflow-x: auto;margin-top:0px;">
+        <div class="col-sm-11">
+          <table class="exibeParam" style="width:80%;float:left;">
+            <tr>
+              <td><span class="labelParam">cliente: </span><span class="conteudoParam" id="labelClienteAnF"></span></td>
+              <td><span class="labelParam">contrato: </span><span class="conteudoParam" id="labelContratoAnF"></span></td>
+              <td><span class="labelParam">Instr. embarque: </span><span class="conteudoParam" id="labelEmbarqueAnF"></span></td>
+            </tr>
+          </table>
+        </div>
+        <div class="col-sm-1" style="padding:3px;">
+          <button type="button" class="btn btn-primary btn-sm" style="" onclick="ocultaAnaliticoFaz()">voltar</button>
+        </div>
+        <div class="col-sm-12">
+          <table class="table-bordered" id="tbAnaliticoFaz" style="width: 100% !important;">
+            <thead>
+              <tr style='display: table-row !important;'>
+                <th style='width:15%;'>fazenda</th>
+                <th style='width:8%;'>bloco</th>
+                <th style='width:8%;'>tipo</th>
+                <th style='width:8%;'>fardos</th>
+                <th style='width:8%;'>peso(Kg)</th>
+                <th style='width:8%;'>Kg/Fardo</th>
+                <th style='width:8%;'>Mic</th>
+                <th style='width:8%;'>Res</th>
+                <th style='width:8%;'>UHM</th>
+              </tr>
+            </thead>
+            <tbody id="contentAnaliticoFaz">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="row" style="display:none;">
+        <div class="col-sm-2">
+          <label>alturaInicio</label>
+          <input type="text" name="alturaInicio" id="alturaInicio" class="form-control">
+        </div>
+        <div class="col-sm-2">
+          <label>alturaFim</label>
+          <input type="text" name="alturaFim" id="alturaFim" class="form-control">
+        </div>
+        <div class="col-sm-2">
+          <label>alturaAtual</label>
+          <input type="text" name="alturaAtual" id="alturaAtual" class="form-control">
+        </div>
+        <div class="col-sm-2">
+          <label>posicaoInicio</label>
+          <input type="text" name="posicaoInicio" id="posicaoInicio" class="form-control">
+        </div>
+        <div class="col-sm-2">
+          <label>posicaoFim</label>
+          <input type="text" name="posicaoFim" id="posicaoFim" class="form-control">
+        </div>
+        <div class="col-sm-2">
+          <label>posicaoAtual</label>
+          <input type="text" name="posicaoAtual" id="posicaoAtual" class="form-control">
+        </div>
+      </div>
+    </div>
+  </form>
+</ion-content>

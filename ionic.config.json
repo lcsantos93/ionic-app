@@ -1,0 +1,8 @@
+{
+  "name": "portalSlc",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular",
+  "pro_id": "cc0b04cb"
+}
